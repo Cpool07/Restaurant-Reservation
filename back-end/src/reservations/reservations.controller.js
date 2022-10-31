@@ -37,9 +37,17 @@ async function read(req, res) {
   });
 }
 
+async function update(req, res) {
+  const data = await service.update(req.params.reservation_id, req.body.data);
+  console.log(data);
+  res.json({
+    data,
+  });
+}
+
 async function validateProp(req, res, next) {
   const {
-    data: { reservation_date, reservation_time, people },
+    data: { reservation_date, reservation_time, people, status },
   } = res.locals;
 
   try {
@@ -58,7 +66,12 @@ async function validateProp(req, res, next) {
       throw error;
     }
     if (typeof people !== "number") {
-      const error = new Error(`'people must be a number`);
+      const error = new Error(`people must be a number`);
+      error.status = 400;
+      throw error;
+    }
+    if (status && status !== "booked") {
+      const error = new Error(`status must be "booked", received: ${status}`);
       error.status = 400;
       throw error;
     }
@@ -67,7 +80,6 @@ async function validateProp(req, res, next) {
     next(error);
   }
 }
-
 
 function validateDate(testdate) {
   let dateReg = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
@@ -131,6 +143,43 @@ function validateResTime(req, res, next) {
   }
 }
 
+async function reservationExists(req, res, next) {
+  const reservation = await service.read(req.params.reservation_id);
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  return next({
+    status: 404,
+    message: `Reservation cannot be found : ${req.params.reservation_id}`,
+  });
+}
+
+async function validStatus(req, res, next) {
+  const validStatuses = ["booked", "seated", "finished"];
+  const { status } = req.body.data;
+  console.log(status);
+  if (status && validStatuses.includes(status)) {
+    return next();
+  } else {
+    return next({
+      status: 400,
+      message: `Invalid Status: ${status}`,
+    });
+  }
+}
+
+async function notFinished(req, res, next) {
+  const { status } = res.locals.reservation;
+  if (status === "finished") {
+    return next({
+      status: 400,
+      message: `a finished reservation cannot be updated`,
+    });
+  }
+  next();
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [
@@ -141,4 +190,10 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   read: asyncErrorBoundary(read),
+  update: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(notFinished),
+    asyncErrorBoundary(validStatus),
+    asyncErrorBoundary(update),
+  ],
 };
