@@ -1,6 +1,6 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
-const hasProperties = require("../utils/hasProperties");
+const hasProps = require("../utils/hasProps");
 
 const REQUIRED_PROPS = [
   "first_name",
@@ -24,10 +24,8 @@ async function list(req, res) {
 }
 
 async function create(req, res) {
-  console.log(res.locals.reservation);
-  res.json({
-    data: [],
-  });
+  const data = await service.create(res.locals.reservation);
+  res.status(201).json({ data });
 }
 
 async function read(req, res) {
@@ -38,13 +36,25 @@ async function read(req, res) {
 
 async function validateProp(req, res, next) {
   const {
-    reservation: { reservation_date, reservation_time, people }
+    reservation: { reservation_date, reservation_time, people },
   } = res.locals;
   try {
     if (!validateDate(reservation_date)) {
       const error = new Error(
-        `'${reservation_date}' format is invalid. Use YYYY-MM-DD`
+        `'${reservation_date}' is invalid 'reservation_date' format. Use YYYY-MM-DD`
       );
+      error.status = 400;
+      throw error;
+    }
+    if (!validateTime(reservation_time)) {
+      const error = new Error(
+        `'${reservation_time}' is invalid 'reservation_time' format. Use HH:MM:SS`
+      );
+      error.status = 400;
+      throw error;
+    }
+    if (typeof people !== "number") {
+      const error = new Error(`'people must be a number`);
       error.status = 400;
       throw error;
     }
@@ -54,17 +64,49 @@ async function validateProp(req, res, next) {
   }
 }
 
-// put in utils
+
 function validateDate(testdate) {
   let dateReg = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
   return dateReg.test(testdate);
 }
 
+function validateTime(time) {
+  let timeReg = /^(2[0-3]|[01][0-9]):[0-5][0-9]$/;
+  return timeReg.test(time);
+}
+
+function validateResDate(req, res, next) {
+  const {
+    reservation: { reservation_date, reservation_time },
+  } = res.locals;
+
+  const reservationDate = new Date(
+    `${reservation_date}T${reservation_time}:00`
+  );
+
+  try {
+    if (Date.now() > Date.parse(reservationDate)) {
+      const error = new Error(`Reservation must be for a future date or time.`);
+      error.status = 400;
+      throw error;
+    }
+    if (reservationDate.getDay() == 2) {
+      const error = new Error(`The restaurant is closed on Tuesdays. Sorry!`);
+      error.status = 400;
+      throw error;
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [
-    hasProperties(...REQUIRED_PROPS),
+    hasProps(...REQUIRED_PROPS),
     asyncErrorBoundary(validateProp),
+    validateResDate,
     asyncErrorBoundary(create),
   ],
   read: asyncErrorBoundary(read),
