@@ -35,10 +35,12 @@ import Table from "./Table";
   }
 
   const reservationList = reservations.map((reservation) => (
-    <Reservation reservation={reservation} />
+    <Reservation key={reservation.reservation_id} reservation={reservation} />
   ));
 
-  const tableList = tables.map((table) => <Table table={table} />);
+  const tableList = tables.map((table) => (
+    <Table key={table.table_id} table={table} />
+  ));
 
   return (
     <main>
@@ -47,10 +49,11 @@ import Table from "./Table";
         <h4 className="mb-0">Reservations for date: {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <div class="container">
-        <div class="row">
-          <div class="col-sm">{reservationList}</div>
-          <div class="col-sm">{tableList}</div>
+      <ErrorAlert error={tablesError} />
+      <div className="container">
+        <div className="row">
+          <div className="col-sm">{reservationList}</div>
+          <div className="col-sm">{tableList}</div>
         </div>
       </div>
     </main>

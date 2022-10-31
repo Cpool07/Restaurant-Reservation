@@ -19,7 +19,6 @@ function NewTable() {
       ...formData,
       [target.name]: target.value,
     });
-    console.log(formData);
   };
 
   const handleSubmit = (event) => {

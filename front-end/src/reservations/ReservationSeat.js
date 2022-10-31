@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { listTables, readReservation, updateTable } from "../utils/api";
+import { listTables, updateTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function Seat() {

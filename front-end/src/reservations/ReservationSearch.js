@@ -1,16 +1,9 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
-import useQuery from "../utils/useQuery";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "../dashboard/Reservation";
 
 function Search() {
-  const history = useHistory();
-
-  //   const query = useQuery();
-  //   const mobileNumber = query.get("mobile_number");
-
   const initialFormState = {
     mobile_number: "",
   };
@@ -19,7 +12,7 @@ function Search() {
   const [formErrors, setFormErrors] = useState([]);
 
   const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  const [reservationsError, setReservationsError] = useState([]);
 
   const handleChange = ({ target }) => {
     setFormData({
@@ -51,13 +44,28 @@ function Search() {
     <ErrorAlert key={error} error={error} />
   ));
 
+  let displayResErrors = reservationsError.map((error) => (
+    <ErrorAlert key={error} error={error} />
+  ));
+
   const reservationList = reservations.map((reservation) => (
     <Reservation reservation={reservation} />
   ));
 
+  const content = reservations.length ? (
+    <div className="container mt-3">
+      <div className="row">
+        <div className="col-sm">{reservationList}</div>
+      </div>
+    </div>
+  ) : (
+    <p>No reservations found</p>
+  );
+
   return (
     <>
       {formErrors.length ? displayErrors : null}
+      {reservationsError.length ? displayResErrors : null}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label" htmlFor="mobile_number">
@@ -77,15 +85,7 @@ function Search() {
           Find
         </button>
       </form>
-      {reservations.length ? (
-        <div class="container mt-3">
-          <div class="row">
-            <div class="col-sm">{reservationList}</div>
-          </div>
-        </div>
-      ) : (
-        <p>No reservations found</p>
-      )}
+      {content}
     </>
   );
 }

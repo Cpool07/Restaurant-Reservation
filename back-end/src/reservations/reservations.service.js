@@ -26,7 +26,6 @@ function create(reservation) {
 }
 
 function read(reservation_id) {
-   console.log(reservation_id);
    return knex("reservations")
       .select()
       .where({ reservation_id })
@@ -35,7 +34,15 @@ function read(reservation_id) {
 
 function update(reservation_id, data) {
   const { status } = data;
-  console.log(status);
+  return knex("reservations")
+    .select()
+    .where({ reservation_id })
+    .update(data, "*")
+    .returning("*")
+    .then((reservationData) => reservationData[0]);
+}
+function updateStatus(reservation_id, data) {
+  const { status } = data;
   return knex("reservations")
     .select()
     .where({ reservation_id })
@@ -50,4 +57,5 @@ module.exports = {
   create,
   read,
   update,
+  updateStatus,
 };

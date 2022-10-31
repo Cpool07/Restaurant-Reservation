@@ -34,9 +34,8 @@ async function create(req, res) {
 }
 
 async function read(req, res) {
-  const { id } = req.params;
-  const data = await service.read(id);
-  console.log(data);
+  const { reservation_id } = req.params;
+  const data = await service.read(reservation_id);
   res.json({
     data,
   });
@@ -44,7 +43,15 @@ async function read(req, res) {
 
 async function update(req, res) {
   const data = await service.update(req.params.reservation_id, req.body.data);
-  console.log(data);
+  res.json({
+    data,
+  });
+}
+async function updateStatus(req, res) {
+  const data = await service.updateStatus(
+    req.params.reservation_id,
+    req.body.data
+  );
   res.json({
     data,
   });
@@ -161,7 +168,7 @@ async function reservationExists(req, res, next) {
 }
 
 async function validStatus(req, res, next) {
-  const validStatuses = ["booked", "seated", "finished"];
+  const validStatuses = ["booked", "seated", "finished", "cancelled"];
   const { status } = req.body.data;
   console.log(status);
   if (status && validStatuses.includes(status)) {
@@ -194,11 +201,17 @@ module.exports = {
     validateResTime,
     asyncErrorBoundary(create),
   ],
-  read: asyncErrorBoundary(read),
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   update: [
+    asyncErrorBoundary(reservationExists),
+    hasProps(...REQUIRED_PROPS),
+    asyncErrorBoundary(validateProp),
+    asyncErrorBoundary(update),
+  ],
+  updateStatus: [
     asyncErrorBoundary(reservationExists),
     asyncErrorBoundary(notFinished),
     asyncErrorBoundary(validStatus),
-    asyncErrorBoundary(update),
+    asyncErrorBoundary(updateStatus),
   ],
 };

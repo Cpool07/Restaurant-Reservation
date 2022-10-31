@@ -8,6 +8,7 @@ import useQuery from "../utils/useQuery";
 import NewTable from "../tables/NewTable";
 import Seat from "../reservations/ReservationSeat";
 import Search from"../reservations/ReservationSearch";
+import ReservationEdit from "../reservations/ReservationEdit";
 
 /**
  * Defines all the routes for the application.
@@ -33,6 +34,9 @@ function Routes() {
       </Route>
       <Route exact={true} path="/reservations/:reservation_id/seat">
         <Seat />
+      </Route>
+      <Route exact={true} path="/reservations/:reservation_id/edit">
+        <ReservationEdit />
       </Route>
       <Route path="/dashboard">
         <Dashboard date={date || today()} />
