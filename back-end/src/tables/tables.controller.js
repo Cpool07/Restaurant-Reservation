@@ -65,6 +65,16 @@ async function reservationExists(req, res, next) {
   });
 }
 
+async function notSeated(req, res, next) {
+  if (res.locals.reservation.status === "seated") {
+    return next({
+      status: 400,
+      message: `${req.body.data.reservation_id} already seated`,
+    });
+  }
+  next();
+}
+
 function capacity(req, res, next) {
   const { people } = res.locals.reservation;
   const { capacity } = res.locals.table;
@@ -104,8 +114,8 @@ async function seat(req, res) {
 
 async function unseat(req, res) {
   const { table_id } = req.params;
-  console.log(table_id);
-  const data = await service.unseat(table_id);
+  const { table } = res.locals;
+  const data = await service.unseat(table);
   res.json({
     data,
   });
@@ -117,6 +127,7 @@ module.exports = {
     hasProps("reservation_id"),
     asyncErrorBoundary(tableExists),
     asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(notSeated),
     asyncErrorBoundary(capacity),
     asyncErrorBoundary(occupied),
     asyncErrorBoundary(seat),
