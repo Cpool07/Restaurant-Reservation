@@ -14,19 +14,19 @@ function Table({ table }) {
   }
 
   return (
-    <div class="card">
-      <h5 class="card-header">Table Name: {table.table_name}</h5>
-      <div class="card-body">
-        <h5 class="card-title">Capacity: {table.capacity}</h5>
+    <div className="card">
+    <h5 className="card-header">Table Name: {table.table_name}</h5>
+    <div className="card-body">
+      <h5 className="card-title">Capacity: {table.capacity}</h5>
         {table.reservation_id ? (
           <>
-            <a
+            <button
               onClick={clickHandler}
-              class="btn btn-primary"
+              className="btn btn-primary"
               data-table-id-finish={table.table_id}
             >
               Finish
-            </a>
+            </button>
             <p data-table-id-status={table.table_id}>Occupied</p>
           </>
         ) : (

@@ -4,7 +4,7 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProps = require("../utils/hasProps");
 
 
-const REQUIRED_PROPERTIES = ["table_name", "capacity"];
+const REQUIRED_PROPS = ["table_name", "capacity"];
 
 async function list(req, res) {
   const tables = await service.list();
@@ -138,7 +138,7 @@ module.exports = {
     asyncErrorBoundary(unseat),
   ],
   create: [
-    hasProps(...REQUIRED_PROPERTIES),
+    hasProps(...REQUIRED_PROPS),
     asyncErrorBoundary(validateProps),
     asyncErrorBoundary(create),
   ],

@@ -42,7 +42,7 @@ export default function ReservationForm() {
       });
     }
 
-    if (reservationDate.getDay() == 2) {
+    if (reservationDate.getDay() === 2) {
       errors.push({
         message: `The Restaurant is closed on Tuesdays. Sorry!`,
       });
@@ -60,8 +60,9 @@ export default function ReservationForm() {
         });
       }
   
+      formData.people = Number(formData.people);
 
-    setFormErrors(errors);
+      setFormErrors(errors);
 
     createReservation(formData, abortController.signal)
       .then((_) => {
