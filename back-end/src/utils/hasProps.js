@@ -10,7 +10,7 @@ function hasProps(...properties) {
             throw error;
           }
         });
-        response.locals.reservation = data;
+        response.locals.data = data;
         next();
       } catch (error) {
         next(error);

@@ -13,7 +13,7 @@
        .post(controller.create)
        .all(methodNotAllowed);
  
- router.route("./:id")
+ router.route("/:id")
        .get(controller.read)
        .all(methodNotAllowed);
  

@@ -72,7 +72,9 @@ export default function ReservationForm() {
     return () => abortController.abort();
   };
 
-  let displayErrors = formErrors.map((error) => <ErrorAlert error={error} />);
+  let displayErrors = formErrors.map((error) => (
+    <ErrorAlert key={error} error={error} />
+  ));
 
   return (
     <>
