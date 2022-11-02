@@ -5,12 +5,6 @@
 Periodic Tables is a restaurant reservation system for fine dining restaurants. Users of the application are restaurant employees who wish to take reservations when a customer calls and to seat them when they come in to the restaurant.
 
 #
-## LINKS
-
-* [Live App]
-* [Live Server]
-
-#
 ## SKILLS & TECHNOLOGIES USED
 ### Frontend:
 * JavaScript 
@@ -130,6 +124,11 @@ Method | Route | Description
 | `PUT` | `/:table_id/seat` | Assign a table to a reservation and change that reservation's `status` to _seated_. Body should contain only a `reservation_id`.
 | `DELETE` | `/:table_id/seat` | Removes a reservation from a table and changes reservation's `status` to _finished_
 
+#
+## LINKS
+
+* [Live App]
+* [Live Server]
 
 #
 ## INSTALLATION INSTRUCTIONS
