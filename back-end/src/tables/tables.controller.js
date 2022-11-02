@@ -69,11 +69,11 @@ async function reservationExists(req, res, next) {
   });
 }
 
-async function openSeat(req, res, next) {
+async function notSeated(req, res, next) {
   if (res.locals.reservation.status === "seated") {
     return next({
       status: 400,
-      message: `${req.body.data.reservation_id} already seated`,
+      message: `reservation ${req.body.data.reservation_id} is already seated`,
     });
   }
   next();
@@ -104,7 +104,7 @@ function notOccupied(req, res, next) {
   if (!occupied) {
     return next({ status: 400, message: `table is not occupied` });
   }
-  return next();
+  next();
 }
 
 async function seat(req, res) {
@@ -133,7 +133,7 @@ module.exports = {
     hasProps("reservation_id"),
     asyncErrorBoundary(tableExists),
     asyncErrorBoundary(reservationExists),
-    asyncErrorBoundary(openSeat),
+    asyncErrorBoundary(notSeated),
     asyncErrorBoundary(capacity),
     asyncErrorBoundary(occupied),
     asyncErrorBoundary(seat),

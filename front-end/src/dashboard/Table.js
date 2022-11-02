@@ -4,11 +4,12 @@ import { unseatTable } from "../utils/api";
 function Table({ table, loadDashboard }) {
   
   function clickHandler() {
-    if (window.confirm("Is this table ready to seat new guests? This cannot be undone.")) {
+    if (window.confirm("Is this table ready to seat new guests?")) {
       const abortController = new AbortController();
       unseatTable(table.table_id, abortController.signal)
         .then(loadDashboard)
         .catch((error) => console.log("error", error));
+        console.log("click okay");
       return () => abortController.abort();
     }
   }
@@ -38,7 +39,7 @@ function Table({ table, loadDashboard }) {
                 data-table-id-status={table.table_id}
                 style={{ cursor: "default" }}
               >
-                Available
+                Free
               </div>
             )}
           </div>
