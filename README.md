@@ -1,5 +1,3 @@
-![Periodic Tables]
-
 #
 # Periodic Tables | Restaurant Reservation System
 
