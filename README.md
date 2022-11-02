@@ -5,21 +5,6 @@
 Periodic Tables is a restaurant reservation system for fine dining restaurants. Users of the application are restaurant employees who wish to take reservations when a customer calls and to seat them when they come in to the restaurant.
 
 #
-## SKILLS & TECHNOLOGIES USED
-### Frontend:
-* JavaScript 
-* HTML
-* CSS
-* Bootstrap
-* React
-
-### Backend:
-* Node.js 
-* Express
-* Knex 
-* Cors
-
-#
 ## DESCRIPTION
 
 
@@ -141,4 +126,20 @@ Method | Route | Description
 1. Run `npx knex` commands from within the `back-end` folder, which is where the `knexfile.js` file is located.
 1. Run `npm run start:dev` within the `back-end` to start your server in development mode.
 1. Run `npm start` within the `front-end` to start your local host
+
+#
+## SKILLS & TECHNOLOGIES USED
+### Frontend:
+* JavaScript 
+* HTML
+* CSS
+* Bootstrap
+* React
+
+### Backend:
+* Node.js 
+* Express
+* Knex 
+* Cors
+
 
