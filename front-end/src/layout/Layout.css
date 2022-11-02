@@ -1,4 +1,18 @@
 .side-bar {
-  background-color: #393a44;
+  background-color: #4c4da7;
   min-width: 200px;
 }
+
+.dash-button {
+  background-color: #4c4da7;
+  color: white;
+}
+
+.dash-button:hover {
+  color: gray;
+}
+
+.full-page {
+  height: 100vh;
+}
+

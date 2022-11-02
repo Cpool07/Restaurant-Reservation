@@ -3,7 +3,7 @@ import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "../dashboard/Reservation";
 
-function Search() {
+function ReservationSearch() {
   const initialFormState = {
     mobile_number: "",
   };
@@ -14,17 +14,31 @@ function Search() {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState([]);
 
+  const [message, setMessage] = useState(null);
+
+  //helper function to add dashes for mobile numbers
+  function mobileDashes(f) {
+    f.value = f.value.split("-").join("");
+    f.value = f.value.replace(/[^0-9-]/g, "");
+    f.value = f.value.replace(
+      /(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)/,
+      "$1$2$3-$4$5$6-$7$8$9$10"
+    );
+  }
+
   const handleChange = ({ target }) => {
+    mobileDashes(target);
     setFormData({
       ...formData,
       [target.name]: target.value,
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const abortController = new AbortController();
     setFormErrors([]);
+    setMessage(null);
 
     const errors = [];
 
@@ -32,7 +46,6 @@ function Search() {
 
     const mobileNumberQuery = { mobile_number: formData.mobile_number };
 
-    // Call API to list reservations
     listReservations(mobileNumberQuery, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
@@ -49,45 +62,48 @@ function Search() {
   ));
 
   const reservationList = reservations.map((reservation) => (
-    <Reservation reservation={reservation} />
+    <Reservation key={reservation.reservation_id} reservation={reservation} />
   ));
 
   const content = reservations.length ? (
     <div className="container mt-3">
-      <div className="row">
-        <div className="col-sm">{reservationList}</div>
+      <div className="row justify-content-center">
+        <div className="col col-8">{reservationList}</div>
       </div>
     </div>
   ) : (
-    <p>No reservations found</p>
+    <h3 className="text-center mt-4">No reservations found</h3>
   );
 
   return (
     <>
+      <div className="text-center mt-3 mb-5">
+        <h1>Find Reservataion by Phone Number</h1>
+      </div>
       {formErrors.length ? displayErrors : null}
       {reservationsError.length ? displayResErrors : null}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="mobile_number">
-            Mobile Number:
-          </label>
-          <input
-            required
-            type="text"
-            placeholder="Enter a customer's phone number"
-            onChange={handleChange}
-            value={formData.mobile_number}
-            className="form-control"
-            name="mobile_number"
-          ></input>
-        </div>
+      <form
+        className="form-inline d-flex justify-content-center"
+        onSubmit={handleSubmit}
+      >
+        <input
+          required
+          type="tel"
+          maxLength="12"
+          placeholder="Enter a customer's phone number"
+          onChange={handleChange}
+          value={formData.mobile_number}
+          className="form-control shadow-sm"
+          name="mobile_number"
+        ></input>
         <button className="btn btn-primary mx-2" type="submit">
           Find
         </button>
       </form>
       {content}
+      {message}
     </>
   );
 }
 
-export default Search;
+export default ReservationSearch;

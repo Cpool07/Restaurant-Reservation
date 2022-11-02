@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import useQuery from "../utils/useQuery";
-import { previous, next } from "../utils/date-time";
-import { useHistory } from "react-router-dom";
 import Reservation from "./Reservation";
 import Table from "./Table";
-
+import ReservationNav from "../reservations/ReservationNav"
 
 /**
  * Defines the dashboard page.
@@ -35,30 +32,39 @@ import Table from "./Table";
   }
 
   const reservationList = reservations.map((reservation) => (
-    <Reservation key={reservation.reservation_id} reservation={reservation} />
+    <Reservation
+      loadDashboard={loadDashboard}
+      key={reservation.reservation_id}
+      reservation={reservation}
+    />
   ));
 
   const tableList = tables.map((table) => (
-    <Table key={table.table_id} table={table} />
+    <Table loadDashboard={loadDashboard} key={table.table_id} table={table} />
   ));
 
   return (
     <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date: {date}</h4>
+      <div className="text-center mt-3 mb-5">
+        <h1>Restaurant Dashboard</h1>
+        <ReservationNav date={date} />
       </div>
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={tablesError} />
       <div className="container">
         <div className="row">
-          <div className="col-sm">{reservationList}</div>
-          <div className="col-sm">{tableList}</div>
+          <div className="col col-sm">
+            <h4 className="mb-4 text-center">Reservations for: {date}</h4>
+            {reservationList}
+          </div>
+          <div className="col col-sm">
+            <h4 className="mb-4 text-center">Tables:</h4>
+            {tableList}
+          </div>
         </div>
       </div>
     </main>
   );
 }
-
 
 export default Dashboard;

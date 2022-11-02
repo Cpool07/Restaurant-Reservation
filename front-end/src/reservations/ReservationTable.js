@@ -110,7 +110,7 @@ function ReservationForm() {
                   className="form-control"
                   id="mobile_number"
                   name="tel"
-                  placeholder="000-000-0000"
+                  placeholder="XXX-XXX-XXXX"
                   type="text"
                   onChange={(e) =>
                     setFormFields({
@@ -162,7 +162,7 @@ function ReservationForm() {
               </div>
               <div className="form-group ">
                 <label className="control-label requiredField" htmlFor="number">
-                  Group Size
+                  Party Size
                   <span className="asteriskField">*</span>
                 </label>
                 <input

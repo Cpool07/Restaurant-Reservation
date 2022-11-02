@@ -6,6 +6,8 @@ const hasProps = require("../utils/hasProps");
 
 const REQUIRED_PROPS = ["table_name", "capacity"];
 
+
+// LIST/CREATE functions
 async function list(req, res) {
   const tables = await service.list();
   res.json({
@@ -18,6 +20,8 @@ async function create(req, res) {
   res.status(201).json({ data });
 }
 
+
+//VALIDATIONS: 
 async function validateProps(req, res, next) {
   const {
     data: { table_name, capacity },
@@ -65,7 +69,7 @@ async function reservationExists(req, res, next) {
   });
 }
 
-async function notSeated(req, res, next) {
+async function openSeat(req, res, next) {
   if (res.locals.reservation.status === "seated") {
     return next({
       status: 400,
@@ -113,13 +117,15 @@ async function seat(req, res) {
 }
 
 async function unseat(req, res) {
+  const { reservation_id } = res.locals.table;
   const { table_id } = req.params;
-  const { table } = res.locals;
-  const data = await service.unseat(table);
+  const data = await service.unseat(table_id, reservation_id);
   res.json({
     data,
   });
 }
+
+
 
 module.exports = {
   list: asyncErrorBoundary(list),
@@ -127,7 +133,7 @@ module.exports = {
     hasProps("reservation_id"),
     asyncErrorBoundary(tableExists),
     asyncErrorBoundary(reservationExists),
-    asyncErrorBoundary(notSeated),
+    asyncErrorBoundary(openSeat),
     asyncErrorBoundary(capacity),
     asyncErrorBoundary(occupied),
     asyncErrorBoundary(seat),
