@@ -7,7 +7,7 @@ import NewReservation from "../reservations/NewReservation";
 import useQuery from "../utils/useQuery";
 import NewTable from "../tables/NewTable";
 import Seat from "../reservations/ReservationSeat";
-import Search from"../reservations/ReservationSearch";
+import ReservationSearch from"../reservations/ReservationSearch";
 import ReservationEdit from "../reservations/ReservationEdit";
 
 /**
@@ -45,7 +45,7 @@ function Routes() {
         <NewTable />
       </Route>
       <Route path="/search">
-        <Search />
+        <ReservationSearch />
       </Route>
       <Route>
         <NotFound />

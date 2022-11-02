@@ -11,9 +11,7 @@ const REQUIRED_PROPS = [
   "people",
 ];
 
-/**
- * List handler for reservation resources
- */
+// LIST/CREASTE/READ/UPDATE functions
 async function list(req, res) {
   const today = new Date().toLocaleDateString().replaceAll("/", "-");
   const { date = today, mobile_number } = req.query;
@@ -57,10 +55,14 @@ async function updateStatus(req, res) {
   });
 }
 
+// VALIDATIONS: DATES/TIMES/STATUS/EXISTS
 async function validateProp(req, res, next) {
   const {
     data: { reservation_date, reservation_time, people, status },
   } = res.locals;
+  
+  const [hours, minutes] = reservation_time.split(":");
+  const newResTime=`${hours}:${minutes}`;
 
   try {
     if (!validateDate(reservation_date)) {
@@ -70,10 +72,15 @@ async function validateProp(req, res, next) {
       error.status = 400;
       throw error;
     }
-    if (!validateTime(reservation_time)) {
+    if (!validateTime(newResTime)) {
       const error = new Error(
         `'${reservation_time}' is invalid 'reservation_time' format. Use HH:MM:SS`
       );
+      error.status = 400;
+      throw error;
+    }
+    if (people < 1) {
+      const error = new Error(`people must be at least 1`);
       error.status = 400;
       throw error;
     }
@@ -93,9 +100,9 @@ async function validateProp(req, res, next) {
   }
 }
 
-function validateDate(testdate) {
+function validateDate(date) {
   let dateReg = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
-  return dateReg.test(testdate);
+  return dateReg.test(date);
 }
 
 function validateTime(time) {
@@ -155,7 +162,7 @@ function validateResTime(req, res, next) {
   }
 }
 
-async function reservationExists(req, res, next) {
+async function resExists(req, res, next) {
   const reservation = await service.read(req.params.reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
@@ -170,7 +177,7 @@ async function reservationExists(req, res, next) {
 async function validStatus(req, res, next) {
   const validStatuses = ["booked", "seated", "finished", "cancelled"];
   const { status } = req.body.data;
-  console.log(status);
+
   if (status && validStatuses.includes(status)) {
     return next();
   } else {
@@ -181,12 +188,13 @@ async function validStatus(req, res, next) {
   }
 }
 
-async function notFinished(req, res, next) {
+async function inProgress(req, res, next) {
   const { status } = res.locals.reservation;
+  
   if (status === "finished") {
     return next({
       status: 400,
-      message: `a finished reservation cannot be updated`,
+      message: `A finished reservation cannot be updated`,
     });
   }
   next();
@@ -201,16 +209,19 @@ module.exports = {
     validateResTime,
     asyncErrorBoundary(create),
   ],
-  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+  read: [
+    asyncErrorBoundary(resExists),
+    asyncErrorBoundary(read)
+  ],
   update: [
-    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(resExists),
     hasProps(...REQUIRED_PROPS),
     asyncErrorBoundary(validateProp),
     asyncErrorBoundary(update),
   ],
   updateStatus: [
-    asyncErrorBoundary(reservationExists),
-    asyncErrorBoundary(notFinished),
+    asyncErrorBoundary(resExists),
+    asyncErrorBoundary(inProgress),
     asyncErrorBoundary(validStatus),
     asyncErrorBoundary(updateStatus),
   ],
