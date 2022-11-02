@@ -112,8 +112,8 @@ Method | Route | Description
 #
 ## LINKS
 
-* [Live App]
-* [Live Server]
+* [Live App]https://restaurant-reservation-client-n0r3.onrender.com
+* [Live Server]https://restaurant-reservation-server-2lx1.onrender.com
 
 #
 ## INSTALLATION INSTRUCTIONS
