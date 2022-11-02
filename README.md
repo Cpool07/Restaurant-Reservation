@@ -65,7 +65,9 @@ The Search page displays reservations with phone numbers matching the search inp
 Reservations can have a `status` of _booked, seated, finished,_ or _cancelled_.
 
 ![search](https://github.com/Cpool07/Restaurant-Reservation/blob/main/front-end/src/screenshots/status.PNG)
-Tables can be _occupied_ or _free_
+
+Tables can be _occupied_ or _free_.
+
 ![search](https://github.com/Cpool07/Restaurant-Reservation/blob/main/front-end/src/screenshots/table-status.png)
 
 #
