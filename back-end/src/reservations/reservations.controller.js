@@ -95,7 +95,7 @@ async function validateProp(req, res, next) {
 }
 
 function validateDate(date) {
-  let dateReg = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
+  let dateReg = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
   return dateReg.test(date);
 }
 
