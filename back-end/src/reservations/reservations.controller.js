@@ -100,7 +100,7 @@ function validateDate(date) {
 }
 
 function validateTime(time) {
-  let timeReg = /^(2[0-3]|[01][0-9]):[0-5][0-9]$/;
+  let timeReg = /^(2[0-3]|[0-1][0-9]):[0-5][0-9]$/;
   return timeReg.test(time);
 }
 
