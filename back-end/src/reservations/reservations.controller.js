@@ -108,19 +108,20 @@ function validateResDate(req, res, next) {
   const {
     data: { reservation_date, reservation_time },
   } = req.body;
-
+  const [hours, minutes] = reservation_time.split(":")
+  const UTCHours = Number(hours) + 5
   const reservationDate = new Date(
-    `${reservation_date}T${reservation_time}:00`
+    `${reservation_date}T${UTCHours}:${minutes}:00.000Z`
   );
-
+  const reservationDay = new Date(`${reservation_date}T${reservation_time}:00.000Z`)
   try {
     if (Date.now() > Date.parse(reservationDate)) {
-      const error = new Error(`Reservation must be for a future date or time.`);
+      const error = new Error(`Reservation must be for a future date or time`);
       error.status = 400;
       throw error;
     }
-    if (reservationDate.getDay() == 2) {
-      const error = new Error(`The restaurant is closed on Tuesdays. Sorry!`);
+    if (reservationDay.getDay() == 2) {
+      const error = new Error(`We are closed on Tuesdays`);
       error.status = 400;
       throw error;
     }
