@@ -13,17 +13,11 @@ const REQUIRED_PROPS = [
 
 // LIST/CREASTE/READ/UPDATE functions
 async function list(req, res) {
-  const today = new Date().toLocaleDateString().replaceAll("/", "-");
-  const { date = today, mobile_number } = req.query;
-  let reservations;
-  if (mobile_number) {
-    reservations = await service.search(mobile_number);
-  } else {
-    reservations = await service.list(date);
-  }
-  res.json({
-    data: [...reservations],
-  });
+  const { date, mobile_number } = req.query;
+  const reservation = await (mobile_number
+    ? service.search(mobile_number)
+    : service.list(date));
+  res.json({ data: reservation });
 }
 
 async function create(req, res) {

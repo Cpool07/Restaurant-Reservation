@@ -2,9 +2,9 @@ const knex = require("../db/connection");
 
 
 
-function list(date) {
+function list() {
   return knex("tables")
-        .select()
+        .select("*")
         .orderBy("table_name");
 }
 

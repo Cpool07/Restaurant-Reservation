@@ -10,9 +10,7 @@ const REQUIRED_PROPS = ["table_name", "capacity"];
 // LIST/CREATE functions
 async function list(req, res) {
   const tables = await service.list();
-  res.json({
-    data: [...tables],
-  });
+  res.json({ data: tables });
 }
 
 async function create(req, res) {
