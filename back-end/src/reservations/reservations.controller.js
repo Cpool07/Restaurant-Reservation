@@ -53,7 +53,7 @@ async function updateStatus(req, res) {
 async function validateProp(req, res, next) {
   const {
     data: { reservation_date, reservation_time, people, status },
-  } = res.locals;
+  } = req.body;
   
   const [hours, minutes] = reservation_time.split(":");
   const newResTime=`${hours}:${minutes}`;
@@ -133,7 +133,7 @@ function validateResDate(req, res, next) {
 function validateResTime(req, res, next) {
   const {
     data: { reservation_time },
-  } = res.locals;
+  } = req.body;
 
   const [hours, minutes] = reservation_time.split(":");
 
