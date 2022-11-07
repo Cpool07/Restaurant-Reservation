@@ -107,7 +107,7 @@ function validateTime(time) {
 function validateResDate(req, res, next) {
   const {
     data: { reservation_date, reservation_time },
-  } = res.locals;
+  } = req.body;
 
   const reservationDate = new Date(
     `${reservation_date}T${reservation_time}:00`
