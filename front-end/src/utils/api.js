@@ -110,45 +110,23 @@
  }
  
  export async function updateTable(reservation_id, table_id, signal) {
-   const tableUrl = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
-   const reservationUrl = new URL(
-     `${API_BASE_URL}/reservations/${reservation_id}/status`
-   );
- 
-   const promises = [
-     fetchJson(
-       tableUrl,
-       {
-         headers,
-         signal,
-         method: "PUT",
-         body: JSON.stringify({
-           data: {
-             reservation_id,
-           },
-         }),
-       },
-       []
-     ),
-     fetchJson(
-       reservationUrl,
-       {
-         headers,
-         signal,
-         method: "PUT",
-         body: JSON.stringify({
-           data: {
-             status: "seated",
-           },
-         }),
-       },
-       []
-     ),
-   ];
- 
-   return await Promise.all(promises);
- 
+   const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
+   return await fetchJson(
+    url,
+    {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        data: {
+          reservation_id
+        }
+      }), signal
+  }
+   )
+
  }
+ 
+   
  
  export async function cancelReservation(reservation_id, signal) {
    const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/status`);
