@@ -55,7 +55,7 @@ function NewReservation() {
 
     if (Date.now() > Date.parse(reservationDate)) {
       errors.push({
-        message: `Reservation must be for a future date or time.`,
+        message: `Reservation cannot be in the past.`,
       });
     }
 
