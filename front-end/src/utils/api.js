@@ -73,15 +73,16 @@
    return await fetchJson(url, { headers, signal }, []);
  }
  
- export async function createReservation(data, signal) {
-   const url = new URL(`${API_BASE_URL}/reservations`);
- 
-   return await fetchJson(
-     url,
-     { headers, signal, method: "POST", body: JSON.stringify({ data }) },
-     []
-   );
- }
+ export async function createReservation(newReservation, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations`);
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ data: newReservation }),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
  
  export async function updateReservation(data, reservation_id, signal) {
    const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
