@@ -11,11 +11,10 @@
  
 
 
-// GET/LIST | POST/CREATE
- router.route("/")
-       .get(controller.list)
-       .post(controller.create)
-       .all(methodNotAllowed);
+// PUT/UPDATESTATUS
+router.route("/:reservation_id/status")
+      .put(controller.updateStatus)
+      .all(methodNotAllowed);
  
 // GET/READ | PUT/UPDATE
  router.route("/:reservation_id")
@@ -23,11 +22,11 @@
        .put(controller.update)
        .all(methodNotAllowed);
 
-
-// PUT/UPDATESTATUS
-router.route("/:reservation_id/status")
-      .put(controller.updateStatus)
-      .all(methodNotAllowed);
+      // GET/LIST | POST/CREATE
+ router.route("/")
+ .get(controller.list)
+ .post(controller.create)
+ .all(methodNotAllowed);
  
 
       
