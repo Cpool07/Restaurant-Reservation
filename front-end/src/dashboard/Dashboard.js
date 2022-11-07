@@ -18,6 +18,7 @@ import ReservationNav from "../reservations/ReservationNav"
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
 
+
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
