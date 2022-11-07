@@ -9,7 +9,6 @@ function Table({ table, loadDashboard }) {
       unseatTable(table.table_id, abortController.signal)
         .then(loadDashboard)
         .catch((error) => console.log("error", error));
-        console.log("click okay");
       return () => abortController.abort();
     }
   }
