@@ -39,9 +39,9 @@ function ReservationEdit() {
         abortController.signal
       );
       setFormData({ ...formatReservationDate(reservation) });
+
       return () => abortController.abort();
     }
-
     loadReservation();
   }, [reservation_id]);
 
@@ -55,66 +55,57 @@ function ReservationEdit() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const abortController = new AbortController();
-    setFormErrors([]);
-    const reservationDate = new Date(
-      `${formData.reservation_date}T${formData.reservation_time}:00`
-    );
-
-    const [hours, minutes] = formData.reservation_time.split(":");
-
     const errors = [];
+    const abortController = new AbortController();
 
-    if (!event.target.checkValidity())
-      event.target.classList.add("was-validated");
+  // formats the people in the reservation so that it is a number
+  const formattedReservation = {...formData, people: Number(formData.people)}
+  
+  //formats the time so it includes the :00 at the end
+  const [hours, minutes] = formattedReservation.reservation_time.split(":")
+  const reservationTime = `${hours}:${minutes}:00`
+  formattedReservation.reservation_time = reservationTime
 
+  const UTCHours = Number(hours) + 5
+  const reservationDate = new Date(
+    `${formattedReservation.reservation_date}T${UTCHours}:${minutes}:00.000Z`
+  );
     if (Date.now() > Date.parse(reservationDate)) {
-      errors.push({
-        message: `Reservation must be for a future date or time.`,
-      });
+      errors.push({ message: `The reservation cannot be in the past` });
     }
 
-    if (reservationDate.getDay() === 2) {
-      errors.push({
-        message: `The Restaurant is closed on Tuesdays. Sorry!`,
-      });
+    const reservationDay = new Date(`${formattedReservation.reservation_date}T${formattedReservation.reservation_time}`)
+    if (reservationDay.getDay() === 2) {
+      errors.push({ message: `The restaurant is closed on Tuesdays` });
     }
 
     if ((hours <= 10 && minutes < 30) || hours <= 9) {
-      errors.push({
-        message: `The Restaurant opens at 10:30 AM.`,
-      });
+      errors.push({ message: `We open at 10:30am` });
     }
-
     if ((hours >= 21 && minutes > 30) || hours >= 22) {
-      errors.push({
-        message: `The Restaurant stops accepting reservations at 9:30 PM.`,
-      });
+      errors.push({ message: `We stop accepting reservations after 9:30pm` });
     }
-
-    formData.people = Number(formData.people);
-
-    if (formData.people < 1) {
-      errors.push({
-        message: `Bookings must include at least 1 guest`,
-      });
+    if (formattedReservation.people < 1) {
+      errors.push({ message: `Reservations must have at least 1 person` });
     }
 
     setFormErrors(errors);
 
     !errors.length &&
-      updateReservation(formData, reservation_id, abortController.signal)
-        .then((_) => {
-          history.push(`/dashboard?date=${formData.reservation_date}`);
-        })
-        .catch((e) => console.log(e));
-
+    updateReservation(formattedReservation, reservation_id, abortController.signal)
+      .then(() =>
+        history.push(`/dashboard?date=${formattedReservation.reservation_date}`)
+      )
+      .catch(setFormErrors);
     return () => abortController.abort();
   };
 
+
+  // checks if there are any errors, and if there are, it shows them above the reservations form
   let displayErrors = formErrors.map((error) => (
-    <ErrorAlert key={error} error={error} />
+    <ErrorAlert key={error.message} error={error} />
   ));
+
 
   return (
     <>
