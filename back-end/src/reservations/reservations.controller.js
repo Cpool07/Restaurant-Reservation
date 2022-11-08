@@ -104,6 +104,7 @@ function validateTime(time) {
   return timeReg.test(time);
 }
 
+
 function validateResDate(req, res, next) {
   const {
     data: { reservation_date, reservation_time },
