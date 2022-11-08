@@ -114,6 +114,7 @@ function validateResDate(req, res, next) {
     `${reservation_date}T${UTCHours}:${minutes}:00.000Z`
   );
   const reservationDay = new Date(`${reservation_date}T${reservation_time}:00.000Z`)
+  
   try {
     if (Date.now() > Date.parse(reservationDate)) {
       const error = new Error(`Reservation must be for a future date or time`);

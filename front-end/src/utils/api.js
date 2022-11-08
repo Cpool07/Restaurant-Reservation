@@ -90,7 +90,7 @@
    return await fetchJson(
      url,
      { headers, signal, method: "PUT", body: JSON.stringify({ data }) },
-     []
+      []
    );
  }
  
